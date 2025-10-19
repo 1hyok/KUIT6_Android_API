@@ -42,11 +42,15 @@ fun PostItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp,
+            pressedElevation = 8.dp,
+            hoveredElevation = 4.dp
+        )
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -56,7 +60,7 @@ fun PostItem(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
                 // 프로필 이미지
                 if (post.author.profileImageUrl != null) {
@@ -64,39 +68,41 @@ fun PostItem(
                         model = post.author.profileImageUrl,
                         contentDescription = "프로필 이미지",
                         modifier = Modifier
-                            .size(36.dp)
+                            .size(44.dp)
                             .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
                 } else {
                     Surface(
-                        modifier = Modifier.size(36.dp),
+                        modifier = Modifier.size(44.dp),
                         shape = CircleShape,
-                        color = MaterialTheme.colorScheme.primaryContainer
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        tonalElevation = 2.dp
                     ) {
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = "기본 프로필",
-                            modifier = Modifier.padding(8.dp),
+                            modifier = Modifier.padding(10.dp),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = post.author.username,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.SemiBold
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
                         ),
                         color = MaterialTheme.colorScheme.onSurface
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = formatDateTime(post.createdAt),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
                 }
             }
@@ -115,11 +121,11 @@ fun PostItem(
 
             // 제목과 내용
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
                 Text(
                     text = post.title,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     maxLines = 2,
@@ -127,14 +133,15 @@ fun PostItem(
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = post.content,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                    lineHeight = MaterialTheme.typography.bodyLarge.lineHeight.times(1.4f)
                 )
             }
         }

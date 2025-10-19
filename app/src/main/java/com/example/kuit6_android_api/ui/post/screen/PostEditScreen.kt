@@ -99,131 +99,131 @@ fun PostEditScreen(
         }
     ) { paddingValues ->
         post?.let {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                        .verticalScroll(rememberScrollState())
-                        .padding(paddingValues)
-                        .padding(20.dp)
-                ) {
-                    OutlinedTextField(
-                        value = title,
-                        onValueChange = { title = it },
-                        label = { Text("제목") },
-                        placeholder = { Text("제목을 입력하세요 (최대 200자)") },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                        )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .verticalScroll(rememberScrollState())
+                    .padding(paddingValues)
+                    .padding(20.dp)
+            ) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("제목") },
+                    placeholder = { Text("제목을 입력하세요 (최대 200자)") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
                     )
+                )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
-                        value = content,
-                        onValueChange = { content = it },
-                        label = { Text("내용") },
-                        placeholder = { Text("내용을 입력하세요") },
+                OutlinedTextField(
+                    value = content,
+                    onValueChange = { content = it },
+                    label = { Text("내용") },
+                    placeholder = { Text("내용을 입력하세요") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    maxLines = 10,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "이미지 첨부",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                if (selectedImageUri != null || post.imageUrl != null) {
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp),
-                        maxLines = 10,
-                        shape = RoundedCornerShape(12.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Text(
-                        text = "이미지 첨부",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    if (selectedImageUri != null || post.imageUrl != null) {
-                        Box(
+                            .height(200.dp)
+                    ) {
+                        AsyncImage(
+                            model = selectedImageUri ?: post.imageUrl,
+                            contentDescription = "선택된 이미지",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp)
-                        ) {
-                            AsyncImage(
-                                model = selectedImageUri ?: post.imageUrl,
-                                contentDescription = "선택된 이미지",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.outline,
-                                        shape = RoundedCornerShape(8.dp)
-                                    ),
-                                contentScale = ContentScale.Crop
-                            )
-                            IconButton(
-                                onClick = { selectedImageUri = null },
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(8.dp)
-                            ) {
-                                Icon(
-                                    Icons.Default.Clear,
-                                    contentDescription = "이미지 제거",
-                                    tint = MaterialTheme.colorScheme.error
-                                )
-                            }
-                        }
-                    } else {
-                        OutlinedButton(
-                            onClick = { imagePickerLauncher.launch("image/*") },
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.outline,
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
+                            contentScale = ContentScale.Crop
+                        )
+                        IconButton(
+                            onClick = { selectedImageUri = null },
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = MaterialTheme.colorScheme.primary
-                            )
+                                .align(Alignment.TopEnd)
+                                .padding(8.dp)
                         ) {
-                            Text("갤러리에서 이미지 선택")
+                            Icon(
+                                Icons.Default.Clear,
+                                contentDescription = "이미지 제거",
+                                tint = MaterialTheme.colorScheme.error
+                            )
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Button(
-                        onClick = {
-                            viewModel.updatePost(postId, title, content, null) {
-                                onPostUpdated()
-                            }
-                        },
+                } else {
+                    OutlinedButton(
+                        onClick = { imagePickerLauncher.launch("image/*") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
-                        enabled = title.isNotBlank() && content.isNotBlank(),
                         shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.primary
                         )
                     ) {
-                        Text(
-                            "수정하기",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        )
+                        Text("갤러리에서 이미지 선택")
                     }
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = {
+                        viewModel.updatePost(postId, title, content, null) {
+                            onPostUpdated()
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    enabled = title.isNotBlank() && content.isNotBlank(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text(
+                        "수정하기",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                }
+            }
         }
     }
 }
