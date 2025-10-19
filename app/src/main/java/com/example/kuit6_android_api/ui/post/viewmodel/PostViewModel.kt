@@ -1,4 +1,4 @@
-package com.example.kuit6_android_api.viewmodel
+package com.example.kuit6_android_api.ui.post.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -10,6 +10,7 @@ import com.example.kuit6_android_api.data.model.Author
 import com.example.kuit6_android_api.data.model.Post
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class PostViewModel : ViewModel() {
 
@@ -133,6 +134,6 @@ class PostViewModel : ViewModel() {
     }
 
     private fun getCurrentDateTime(): String {
-        return java.time.LocalDateTime.now().toString()
+        return LocalDateTime.now().toString()
     }
 }

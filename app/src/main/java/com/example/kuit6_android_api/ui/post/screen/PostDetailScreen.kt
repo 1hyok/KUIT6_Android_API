@@ -1,4 +1,4 @@
-package com.example.kuit6_android_api.ui.post
+package com.example.kuit6_android_api.ui.post.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -44,7 +44,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.kuit6_android_api.viewmodel.PostViewModel
+import com.example.kuit6_android_api.util.formatDateTime
+import com.example.kuit6_android_api.ui.post.viewmodel.PostViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -213,33 +214,12 @@ fun PostDetailScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun PostDetailContentPreview() {
+fun PostDetailScreenPreview() {
     MaterialTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "샘플 게시글 제목",
-                style = MaterialTheme.typography.headlineMedium
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "작성자: testuser",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = "작성일: 2025-10-03T12:00:00",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "이것은 샘플 게시글의 내용입니다. 실제 게시글에서는 여기에 더 긴 내용이 들어갈 수 있습니다.",
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
+        PostDetailScreen(
+            postId = 1L,
+            onNavigateBack = {},
+            onEditClick = {}
+        )
     }
 }
