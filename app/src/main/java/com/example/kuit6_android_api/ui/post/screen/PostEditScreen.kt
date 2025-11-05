@@ -5,13 +5,17 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -20,6 +24,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,7 +35,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,7 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -54,6 +60,7 @@ fun PostEditScreen(
     onPostUpdated: () -> Unit,
     viewModel: PostViewModel = viewModel()
 ) {
+    val context = LocalContext.current
     val post = viewModel.postDetail
 
     var title by remember { mutableStateOf("") }
@@ -64,7 +71,20 @@ fun PostEditScreen(
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        selectedImageUri = uri
+        uri?.let {
+            selectedImageUri = it
+            // 이미지 선택 시 자동으로 업로드
+            viewModel.uploadImage(
+                context = context,
+                uri = it,
+                onSuccess = { imageUrl ->
+                    // 업로드 성공
+                },
+                onError = { error ->
+                    // 에러 처리
+                }
+            )
+        }
     }
 
     LaunchedEffect(postId) {
@@ -171,7 +191,10 @@ fun PostEditScreen(
                             contentScale = ContentScale.Crop
                         )
                         IconButton(
-                            onClick = { selectedImageUri = null },
+                            onClick = {
+                                selectedImageUri = null
+                                viewModel.clearUploadedImageUrl()
+                            },
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .padding(8.dp)
@@ -202,26 +225,45 @@ fun PostEditScreen(
 
                 Button(
                     onClick = {
-                        viewModel.updatePost(postId, title, content, null) {
+                        val imageUrl = if (selectedImageUri != null) {
+                            viewModel.uploadedImageUrl
+                        } else {
+                            post?.imageUrl
+                        }
+                        viewModel.updatePost(postId, title, content, imageUrl) {
                             onPostUpdated()
                         }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    enabled = title.isNotBlank() && content.isNotBlank(),
+                    enabled = title.isNotBlank() && content.isNotBlank() && !viewModel.isUploading,
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant
                     )
                 ) {
-                    Text(
-                        "수정하기",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.SemiBold
+                    if (viewModel.isUploading) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("업로드 중...")
+                        }
+                    } else {
+                        Text(
+                            "수정하기",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.SemiBold
+                            )
                         )
-                    )
+                    }
                 }
             }
         }
