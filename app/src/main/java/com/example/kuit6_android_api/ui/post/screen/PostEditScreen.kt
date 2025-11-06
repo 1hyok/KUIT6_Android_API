@@ -202,9 +202,9 @@ fun PostEditScreen(
 
                 Button(
                     onClick = {
-                        viewModel.updatePost(postId, title, content, null) {
-                            onPostUpdated()
-                        }
+//                        viewModel.updatePost(postId, title, content, null) {
+//                            onPostUpdated()
+//                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()

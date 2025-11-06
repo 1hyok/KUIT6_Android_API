@@ -59,7 +59,7 @@ fun PostDetailScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(postId) {
-        viewModel.getPostDetail(postId)
+//        viewModel.getPostDetail(postId)
     }
 
     Scaffold(
@@ -194,10 +194,10 @@ fun PostDetailScreen(
             text = { Text("정말로 이 게시글을 삭제하시겠습니까?") },
             confirmButton = {
                 TextButton(onClick = {
-                    viewModel.deletePost(postId) {
-                        showDeleteDialog = false
-                        onNavigateBack()
-                    }
+//                    viewModel.deletePost(postId) {
+//                        showDeleteDialog = false
+//                        onNavigateBack()
+//                    }
                 }) {
                     Text("삭제")
                 }
