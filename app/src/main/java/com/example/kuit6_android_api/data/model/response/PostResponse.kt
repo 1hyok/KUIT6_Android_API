@@ -1,13 +1,15 @@
 package com.example.kuit6_android_api.data.model.response
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PostResponse(
-    @SerializedName(value="id") val id:Long,
-    @SerializedName(value="title") val title:String,
-    @SerializedName(value="content") val content:String,
-    @SerializedName(value="imageUrl") val imageUrl:String?,
-    @SerializedName(value="author") val author: AuthorResponse,
-    @SerializedName(value="createdAt") val createdAt:String,
-    @SerializedName(value="updatedAt") val updatedAt:String
+    @SerialName("id") val id: Long,
+    @SerialName("title") val title: String,
+    @SerialName("content") val content: String,
+    @SerialName("imageUrl") val imageUrl: String?,
+    @SerialName("author") val author: AuthorResponse,
+    @SerialName("createdAt") val createdAt: String,
+    @SerialName("updatedAt") val updatedAt: String
 )
