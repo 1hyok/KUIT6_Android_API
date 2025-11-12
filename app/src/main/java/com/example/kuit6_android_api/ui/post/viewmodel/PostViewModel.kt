@@ -2,7 +2,6 @@ package com.example.kuit6_android_api.ui.post.viewmodel
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,15 +10,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.kuit6_android_api.data.api.RetrofitClient
 import com.example.kuit6_android_api.data.model.request.PostCreateRequest
 import com.example.kuit6_android_api.data.model.response.PostResponse
+import com.example.kuit6_android_api.util.UriUtils
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 
 class PostViewModel : ViewModel() {
-    var posts by mutableStateOf<List<PostResponse>>(emptyList())
-        private set
-
     var postDetail by mutableStateOf<PostResponse?>(null)
         private set
 
@@ -30,22 +27,6 @@ class PostViewModel : ViewModel() {
         private set
 
     private val apiService = RetrofitClient.apiService
-
-    fun getPosts() {
-        viewModelScope.launch {
-            runCatching {
-                apiService.getPosts()
-            }.onSuccess { response ->
-                response.data?.let {
-                    if (response.success) {
-                        posts = response.data
-                    }
-                }
-            }.onFailure { error ->
-                Log.e("getPost", error.message.toString())
-            }
-        }
-    }
 
     fun getPostDetail(postId: Long) {
         viewModelScope.launch {
