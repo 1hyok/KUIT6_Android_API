@@ -53,7 +53,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.kuit6_android_api.ui.post.viewmodel.PostViewModel
+import com.example.kuit6_android_api.di.AppContainer
+import com.example.kuit6_android_api.ui.post.viewmodel.PostCreateViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +62,12 @@ import kotlinx.coroutines.launch
 fun PostCreateScreen(
     onNavigateBack: () -> Unit,
     onPostCreated: () -> Unit,
-    viewModel: PostViewModel = viewModel(),
+    viewModel: PostCreateViewModel = viewModel(
+        factory = androidx.lifecycle.ViewModelProvider.Factory { modelClass ->
+            val appContainer = AppContainer()
+            PostCreateViewModel(appContainer.postRepository) as androidx.lifecycle.ViewModel
+        }
+    ),
     snackBarState: SnackbarHostState
 ) {
     val context = LocalContext.current

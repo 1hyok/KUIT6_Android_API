@@ -46,7 +46,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.kuit6_android_api.ui.post.viewmodel.PostViewModel
+import com.example.kuit6_android_api.di.AppContainer
+import com.example.kuit6_android_api.ui.post.viewmodel.PostDetailViewModel
 import com.example.kuit6_android_api.util.formatDateTime
 import kotlinx.coroutines.launch
 
@@ -56,7 +57,12 @@ fun PostDetailScreen(
     postId: Long,
     onNavigateBack: () -> Unit,
     onEditClick: (Long) -> Unit = {},
-    viewModel: PostViewModel = viewModel(),
+    viewModel: PostDetailViewModel = viewModel(
+        factory = androidx.lifecycle.ViewModelProvider.Factory { modelClass ->
+            val appContainer = AppContainer()
+            PostDetailViewModel(appContainer.postRepository) as androidx.lifecycle.ViewModel
+        }
+    ),
     snackBarState: SnackbarHostState
 ) {
     val post = viewModel.postDetail
@@ -64,7 +70,7 @@ fun PostDetailScreen(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(postId) {
-//        viewModel.getPostDetail(postId)
+        viewModel.getPostDetail(postId)
     }
 
     Scaffold(
