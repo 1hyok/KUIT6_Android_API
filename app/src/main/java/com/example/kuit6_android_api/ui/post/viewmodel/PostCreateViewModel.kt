@@ -15,8 +15,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 
 //PostViewModel을 PostListViewModel, PostCreateViewModel, PostDetailViewModel, PostEditViewModel로 분리
-//uiState를 통해 상태를 한 번에 모아 처리
-data class PostCreateUiState(
+data class PostCreateUiState( //uiState를 통해 상태를 한 번에 모아 처리
     val uploadedImageUrl: String? = null,
     val isUploading: Boolean = false
 )
@@ -24,6 +23,7 @@ data class PostCreateUiState(
 class PostCreateViewModel(
     private val repository: PostRepository
 ) : ViewModel() {
+    //st
     var uiState by mutableStateOf(PostCreateUiState())
         private set
 
