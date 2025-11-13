@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kuit6_android_api.data.repository.PostRepository
 import com.example.kuit6_android_api.data.model.response.PostResponse
+import com.example.kuit6_android_api.util.UriUtils
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -66,26 +67,28 @@ class PostEditViewModel(
     ) {
         viewModelScope.launch {
             uiState = uiState.copy(isUploading = true)
-            runCatching {
-                val file = UriUtils.uriToFile(context, uri)
-                if (file == null) {
-                    throw Exception("파일 변환 실패")
-                }
-
-                val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-                val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
-
-                repository.uploadImage(body)
-            }.onSuccess { imageUrl ->
-                uiState = uiState.copy(
-                    isUploading = false,
-                    uploadedImageUrl = imageUrl
-                )
-                onSuccess(imageUrl)
-            }.onFailure { error ->
+            val file = UriUtils.uriToFile(context, uri)
+            if (file == null) {
                 uiState = uiState.copy(isUploading = false)
-                onError(error.message ?: "업로드 실패")
+                onError("파일 변환 실패")
+                return@launch
             }
+
+            val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+            val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+
+            repository.uploadImage(body)
+                .onSuccess { imageUrl ->
+                    uiState = uiState.copy(
+                        isUploading = false,
+                        uploadedImageUrl = imageUrl
+                    )
+                    onSuccess(imageUrl)
+                }
+                .onFailure { error ->
+                    uiState = uiState.copy(isUploading = false)
+                    onError(error.message ?: "업로드 실패")
+                }
         }
     }
 }
