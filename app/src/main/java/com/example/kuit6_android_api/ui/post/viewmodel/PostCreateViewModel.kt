@@ -13,13 +13,16 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 
+//uiState를 통해 상태를 한 번에 모아 처리
+data class PostCreateUiState(
+    val uploadedImageUrl: String? = null,
+    val isUploading: Boolean = false
+)
+
 class PostCreateViewModel(
     private val repository: PostRepository
 ) : ViewModel() {
-    var uploadedImageUrl by mutableStateOf<String?>(null)
-        private set
-
-    var isUploading by mutableStateOf(false)
+    var uiState by mutableStateOf(PostCreateUiState())
         private set
 
     fun createPost(
@@ -32,14 +35,14 @@ class PostCreateViewModel(
         viewModelScope.launch {
             repository.createPost(author, title, content, imageUrl)
                 .onSuccess {
-                    clearUploadedImageUrl()
+                    uiState = uiState.copy(uploadedImageUrl = null)
                     onSuccess()
                 }
         }
     }
 
     fun clearUploadedImageUrl() {
-        uploadedImageUrl = null
+        uiState = uiState.copy(uploadedImageUrl = null)
     }
 
     fun uploadImage(
@@ -49,7 +52,7 @@ class PostCreateViewModel(
         onError: (String) -> Unit = {}
     ) {
         viewModelScope.launch {
-            isUploading = true
+            uiState = uiState.copy(isUploading = true)
             runCatching {
                 val file = UriUtils.uriToFile(context, uri)
                 if (file == null) {
@@ -61,11 +64,13 @@ class PostCreateViewModel(
 
                 repository.uploadImage(body)
             }.onSuccess { imageUrl ->
-                isUploading = false
-                uploadedImageUrl = imageUrl
+                uiState = uiState.copy(
+                    isUploading = false,
+                    uploadedImageUrl = imageUrl
+                )
                 onSuccess(imageUrl)
             }.onFailure { error ->
-                isUploading = false
+                uiState = uiState.copy(isUploading = false)
                 onError(error.message ?: "업로드 실패")
             }
         }

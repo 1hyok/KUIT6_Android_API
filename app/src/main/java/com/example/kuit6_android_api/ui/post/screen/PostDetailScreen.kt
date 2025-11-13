@@ -65,7 +65,8 @@ fun PostDetailScreen(
     ),
     snackBarState: SnackbarHostState
 ) {
-    val post = viewModel.postDetail
+    val uiState = viewModel.uiState
+    val post = uiState.postDetail
     var showDeleteDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 

@@ -9,20 +9,24 @@ import com.example.kuit6_android_api.data.repository.PostRepository
 import com.example.kuit6_android_api.data.model.response.PostResponse
 import kotlinx.coroutines.launch
 
+data class PostDetailUiState(
+    val postDetail: PostResponse? = null
+)
+
 class PostDetailViewModel(
     private val repository: PostRepository
 ) : ViewModel() {
-    var postDetail by mutableStateOf<PostResponse?>(null)
+    var uiState by mutableStateOf(PostDetailUiState())
         private set
 
     fun getPostDetail(postId: Long) {
         viewModelScope.launch {
             repository.getPostDetail(postId)
                 .onSuccess { post ->
-                    postDetail = post
+                    uiState = uiState.copy(postDetail = post)
                 }
                 .onFailure {
-                    postDetail = null
+                    uiState = uiState.copy(postDetail = null)
                 }
         }
     }

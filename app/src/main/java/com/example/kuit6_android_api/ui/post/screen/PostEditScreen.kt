@@ -71,7 +71,8 @@ fun PostEditScreen(
     snackBarState: SnackbarHostState
 ) {
     val context = LocalContext.current
-    val post = viewModel.postDetail
+    val uiState = viewModel.uiState
+    val post = uiState.postDetail
     val scope = rememberCoroutineScope()
 
     var title by remember { mutableStateOf("") }
@@ -237,7 +238,7 @@ fun PostEditScreen(
                 Button(
                     onClick = {
                         val imageUrl = if (selectedImageUri != null) {
-                            viewModel.uploadedImageUrl
+                            uiState.uploadedImageUrl
                         } else {
                             post?.imageUrl
                         }
@@ -251,14 +252,14 @@ fun PostEditScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    enabled = title.isNotBlank() && content.isNotBlank() && !viewModel.isUploading,
+                    enabled = title.isNotBlank() && content.isNotBlank() && !uiState.isUploading,
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant
                     )
                 ) {
-                    if (viewModel.isUploading) {
+                    if (uiState.isUploading) {
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically

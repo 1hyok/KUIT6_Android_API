@@ -14,26 +14,26 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 
+data class PostEditUiState(
+    val postDetail: PostResponse? = null,
+    val uploadedImageUrl: String? = null,
+    val isUploading: Boolean = false
+)
+
 class PostEditViewModel(
     private val repository: PostRepository
 ) : ViewModel() {
-    var postDetail by mutableStateOf<PostResponse?>(null)
-        private set
-
-    var uploadedImageUrl by mutableStateOf<String?>(null)
-        private set
-
-    var isUploading by mutableStateOf(false)
+    var uiState by mutableStateOf(PostEditUiState())
         private set
 
     fun getPostDetail(postId: Long) {
         viewModelScope.launch {
             repository.getPostDetail(postId)
                 .onSuccess { post ->
-                    postDetail = post
+                    uiState = uiState.copy(postDetail = post)
                 }
                 .onFailure {
-                    postDetail = null
+                    uiState = uiState.copy(postDetail = null)
                 }
         }
     }
@@ -48,14 +48,14 @@ class PostEditViewModel(
         viewModelScope.launch {
             repository.updatePost(postId, title, content, imageUrl)
                 .onSuccess {
-                    clearUploadedImageUrl()
+                    uiState = uiState.copy(uploadedImageUrl = null)
                     onSuccess()
                 }
         }
     }
 
     fun clearUploadedImageUrl() {
-        uploadedImageUrl = null
+        uiState = uiState.copy(uploadedImageUrl = null)
     }
 
     fun uploadImage(
@@ -65,7 +65,7 @@ class PostEditViewModel(
         onError: (String) -> Unit = {}
     ) {
         viewModelScope.launch {
-            isUploading = true
+            uiState = uiState.copy(isUploading = true)
             runCatching {
                 val file = UriUtils.uriToFile(context, uri)
                 if (file == null) {
@@ -77,11 +77,13 @@ class PostEditViewModel(
 
                 repository.uploadImage(body)
             }.onSuccess { imageUrl ->
-                isUploading = false
-                uploadedImageUrl = imageUrl
+                uiState = uiState.copy(
+                    isUploading = false,
+                    uploadedImageUrl = imageUrl
+                )
                 onSuccess(imageUrl)
             }.onFailure { error ->
-                isUploading = false
+                uiState = uiState.copy(isUploading = false)
                 onError(error.message ?: "업로드 실패")
             }
         }
