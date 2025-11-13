@@ -19,25 +19,32 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.kuit6_android_api.di.AppContainer
 import com.example.kuit6_android_api.ui.post.component.PostItem
-import com.example.kuit6_android_api.ui.post.state.PostListUiState
 import com.example.kuit6_android_api.ui.post.viewmodel.PostListViewModel
-import com.example.kuit6_android_api.ui.post.viewmodel.PostViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostListScreen(
     onPostClick: (Long) -> Unit,
     onCreatePostClick: () -> Unit,
-    viewModel: PostListViewModel
+    viewModel: PostListViewModel = viewModel(
+        factory = androidx.lifecycle.ViewModelProvider.Factory { modelClass ->
+            val appContainer = AppContainer()
+            PostListViewModel(appContainer.postRepository) as androidx.lifecycle.ViewModel
+        }
+    )
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState
+    val posts = uiState.posts
 
+    LaunchedEffect(Unit) {
+        viewModel.refresh()
+    }
 
     Scaffold(
         topBar = {
@@ -51,29 +58,19 @@ fun PostListScreen(
             }
         }
     ) { paddingValues ->
-        when(uiState){
-            is PostListUiState.Loading->{
-                CircularProgressIndicator()
-            }
-            is PostListUiState.Success-> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .background(MaterialTheme.colorScheme.background),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items((uiState as PostListUiState.Success).posts) { post ->
-                        PostItem(
-                            post = post,
-                            onClick = { onPostClick(post.id) }
-                        )
-                    }
-                }
-            }
-            is PostListUiState.Error->{
-
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(posts) { post ->
+                PostItem(
+                    post = post,
+                    onClick = { onPostClick(post.id) }
+                )
             }
         }
     }

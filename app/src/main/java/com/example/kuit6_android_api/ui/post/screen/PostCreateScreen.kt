@@ -71,6 +71,7 @@ fun PostCreateScreen(
     snackBarState: SnackbarHostState
 ) {
     val context = LocalContext.current
+    val uiState = viewModel.uiState
     var author by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
@@ -204,7 +205,7 @@ fun PostCreateScreen(
                             color = MaterialTheme.colorScheme.onSurface
                         )
 
-                        if (selectedImageUri == null && !viewModel.isUploading) {
+                        if (selectedImageUri == null && !uiState.isUploading) {
                             FilledTonalButton(
                                 onClick = { imagePickerLauncher.launch("image/*") },
                                 shape = RoundedCornerShape(10.dp)
@@ -215,7 +216,7 @@ fun PostCreateScreen(
                     }
 
                     // 업로드 중 표시
-                    if (viewModel.isUploading) {
+                    if (uiState.isUploading) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -236,7 +237,7 @@ fun PostCreateScreen(
                     }
 
                     // 업로드된 이미지 미리보기
-                    if (selectedImageUri != null && !viewModel.isUploading) {
+                    if (selectedImageUri != null && !uiState.isUploading) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Box(
                             modifier = Modifier.fillMaxWidth()
@@ -276,7 +277,7 @@ fun PostCreateScreen(
             Button(
                 onClick = {
                     val finalAuthor = author
-                    viewModel.createPost(finalAuthor, title, content, viewModel.uploadedImageUrl) {
+                    viewModel.createPost(finalAuthor, title, content, uiState.uploadedImageUrl) {
                         onPostCreated()
                         scope.launch { snackBarState.showSnackbar("게시글이 작성되었습니다.") }
                     }
@@ -284,7 +285,7 @@ fun PostCreateScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                enabled = title.isNotBlank() && content.isNotBlank() && !viewModel.isUploading,
+                enabled = title.isNotBlank() && content.isNotBlank() && !uiState.isUploading,
                 shape = RoundedCornerShape(16.dp),
                 elevation = ButtonDefaults.buttonElevation(
                     defaultElevation = 4.dp,
