@@ -121,20 +121,23 @@ class AppContainer {
    - `PostDetailViewModel` 추가
    - `PostEditViewModel` 추가
 
-2. **PostDetailScreen에 ViewModel 주입:**
+2. **PostDetailScreen에서 Factory를 통해 Repository를 ViewModel에 주입:**
    ```kotlin
    viewModel = viewModel(factory = postViewModelFactory { PostDetailViewModel(it) })
    ```
+   - Factory가 AppContainer에서 Repository를 가져와 ViewModel 생성자에 전달
 
-3. **PostCreateScreen에 ViewModel 주입:**
+3. **PostCreateScreen에서 Factory를 통해 Repository를 ViewModel에 주입:**
    ```kotlin
    viewModel = viewModel(factory = postViewModelFactory { PostCreateViewModel(it) })
    ```
+   - Factory가 AppContainer에서 Repository를 가져와 ViewModel 생성자에 전달
 
-4. **PostEditScreen에 ViewModel 주입:**
+4. **PostEditScreen에서 Factory를 통해 Repository를 ViewModel에 주입:**
    ```kotlin
    viewModel = viewModel(factory = postViewModelFactory { PostEditViewModel(it) })
    ```
+   - Factory가 AppContainer에서 Repository를 가져와 ViewModel 생성자에 전달
 
 ### 3.4 `app/src/main/java/com/example/kuit6_android_api/ui/post/screen/PostCreateScreen.kt`
 
@@ -145,7 +148,7 @@ class AppContainer {
 
 2. **ViewModel 타입 변경:**
    - `PostViewModel` → `PostCreateViewModel`
-   - Factory를 통한 의존성 주입 추가
+   - Factory를 통해 Repository를 ViewModel에 주입
 
 3. **상태 접근 방식 변경:**
    - `viewModel.isUploading` → `uiState.isUploading`
@@ -164,7 +167,7 @@ class AppContainer {
 
 2. **ViewModel 타입 변경:**
    - `PostViewModel` → `PostDetailViewModel`
-   - Factory를 통한 의존성 주입 추가
+   - Factory를 통해 Repository를 ViewModel에 주입
 
 3. **상태 접근 방식 변경:**
    - `viewModel.postDetail` → `uiState.postDetail`
@@ -185,7 +188,7 @@ class AppContainer {
 
 2. **ViewModel 타입 변경:**
    - `PostViewModel` → `PostEditViewModel`
-   - Factory를 통한 의존성 주입 추가
+   - Factory를 통해 Repository를 ViewModel에 주입
 
 3. **상태 접근 방식 변경:**
    - `viewModel.postDetail` → `uiState.postDetail`
@@ -206,8 +209,8 @@ class AppContainer {
    - `DisposableEffect`, `LocalLifecycleOwner`, `Lifecycle`, `LifecycleEventObserver` 추가
    - `postViewModelFactory` 추가
 
-2. **ViewModel 주입 방식 변경:**
-   - Factory를 통한 의존성 주입 추가
+2. **Factory를 통한 Repository 주입 추가:**
+   - Factory가 AppContainer에서 Repository를 가져와 ViewModel 생성자에 전달
    - 기본값으로 ViewModel 생성
 
 3. **상태 관리 방식 변경:**
@@ -285,16 +288,17 @@ class AppContainer {
   - `PostDetailViewModel`: 상세 조회 및 삭제
   - `PostEditViewModel`: 게시글 수정
 
-### 3. 상태 관리 방식 변경
-- `StateFlow` 기반 → `mutableStateOf` 기반
-- Sealed class 기반 상태 → Data class 기반 상태
-- UI 상태를 UiState data class로 명확히 정의
+### 3. UiState 구현
+- 각 ViewModel에 UiState data class 추가 (PostCreateUiState, PostDetailUiState, PostEditUiState)
+- PostListViewModel은 practice-only와 동일하게 StateFlow + sealed class 기반 PostListUiState 유지
+- UI 상태를 UiState로 명확히 정의하여 상태 관리 일관성 향상
 
 ### 4. 의존성 주입 구조
 - `AppContainer`를 통한 중앙 집중식 의존성 관리
 - Factory 패턴을 통한 ViewModel 생성 시 Repository 주입
+- ViewModel이 Repository를 파라미터로 받아 사용 (의존성 주입)
 
 ### 5. Lifecycle 관리 개선
-- `DisposableEffect`를 사용한 화면 재진입 시 자동 새로고침
-- Lifecycle 이벤트 기반 데이터 갱신
+- `LaunchedEffect`를 사용한 초기 로드 시 refresh 함수 실행 (미션 요구사항)
+- PostListScreen에서 화면 진입 시 자동으로 데이터 새로고침
 

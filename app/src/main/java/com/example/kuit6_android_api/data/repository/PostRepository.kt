@@ -6,6 +6,7 @@ import okhttp3.MultipartBody
 
 interface PostRepository {
     suspend fun getPosts(): Result<List<PostResponse>>
+    //레포지토리 패턴을 사용하기 위해 다음 함수들을 추가
     suspend fun getPostDetail(postId: Long): Result<PostResponse>
     suspend fun createPost(
         author: String,
