@@ -65,6 +65,9 @@ fun PostCreateScreen(
     onNavigateBack: () -> Unit,
     onPostCreated: () -> Unit,
     viewModel: PostCreateViewModel = viewModel<PostCreateViewModel>(
+        //레포지토리 패턴을 위해 레포지토리를 뷰모델에 파라미터로 전달
+        //레포지토리는 수동 주입(App Container)을 통해 가져옴
+        //뷰모델에 파라미터를 전달하기 위해서 Factory 패턴을 사용
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 val appContainer = AppContainer()
