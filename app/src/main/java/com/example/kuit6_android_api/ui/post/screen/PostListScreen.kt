@@ -38,8 +38,9 @@ fun PostListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // 미션 요구사항: refresh 함수를 메인화면에서 sideEffect로 항상 실행시키기
     LaunchedEffect(Unit) {
+        // Side Effect:UI 렌더링 외의 작업
+        // UI를 직접 그리지 않고 변화하게 했으므로 Side Effect
         viewModel.refresh()
     }
 
