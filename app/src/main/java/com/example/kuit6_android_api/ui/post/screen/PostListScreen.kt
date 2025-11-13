@@ -18,10 +18,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kuit6_android_api.di.AppContainer
 import com.example.kuit6_android_api.ui.post.component.PostItem
@@ -32,15 +38,32 @@ import com.example.kuit6_android_api.ui.post.viewmodel.PostListViewModel
 fun PostListScreen(
     onPostClick: (Long) -> Unit,
     onCreatePostClick: () -> Unit,
-    viewModel: PostListViewModel = viewModel(
-        factory = androidx.lifecycle.ViewModelProvider.Factory { modelClass ->
-            val appContainer = AppContainer()
-            PostListViewModel(appContainer.postRepository) as androidx.lifecycle.ViewModel
+    viewModel: PostListViewModel = viewModel<PostListViewModel>(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val appContainer = AppContainer()
+                return PostListViewModel(appContainer.postRepository) as T
+            }
         }
     )
 ) {
     val uiState = viewModel.uiState
     val posts = uiState.posts
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {//lifecycleOwner가 변경될 때마다 실행
+        //LaunchedEffect와 달리 화면이 처음 나타날 때뿐만 아니라 다시 나타날 때도 실행
+        val observer = LifecycleEventObserver { _, event -> //lifecycle 이벤트를 감지하는 옵저버
+            //event로 상태 변화 받음
+            if (event == Lifecycle.Event.ON_RESUME) {//화면이 다시 활성화되면
+                viewModel.refresh()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)//화면 상태가 바뀔 때마다 알림을 받기 위해 옵저버 등록
+        onDispose {//화면이 사라질 때
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.refresh()
