@@ -50,12 +50,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.kuit6_android_api.di.AppContainer
 import com.example.kuit6_android_api.ui.post.viewmodel.PostEditViewModel
+import com.example.kuit6_android_api.ui.post.viewmodel.postViewModelFactory
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,14 +62,7 @@ fun PostEditScreen(
     postId: Long,
     onNavigateBack: () -> Unit,
     onPostUpdated: () -> Unit,
-    viewModel: PostEditViewModel = viewModel<PostEditViewModel>(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val appContainer = AppContainer()
-                return PostEditViewModel(appContainer.postRepository) as T
-            }
-        }
-    ),
+    viewModel: PostEditViewModel = viewModel(factory = postViewModelFactory { PostEditViewModel(it) }),
     snackBarState: SnackbarHostState
 ) {
     val context = LocalContext.current

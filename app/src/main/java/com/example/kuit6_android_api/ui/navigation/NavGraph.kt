@@ -11,6 +11,9 @@ import com.example.kuit6_android_api.ui.post.screen.PostCreateScreen
 import com.example.kuit6_android_api.ui.post.screen.PostDetailScreen
 import com.example.kuit6_android_api.ui.post.screen.PostEditScreen
 import com.example.kuit6_android_api.ui.post.screen.PostListScreen
+import com.example.kuit6_android_api.ui.post.viewmodel.PostCreateViewModel
+import com.example.kuit6_android_api.ui.post.viewmodel.PostDetailViewModel
+import com.example.kuit6_android_api.ui.post.viewmodel.PostEditViewModel
 import com.example.kuit6_android_api.ui.post.viewmodel.PostListViewModel
 import com.example.kuit6_android_api.ui.post.viewmodel.postViewModelFactory
 
@@ -47,6 +50,7 @@ fun NavGraph(
                 onEditClick = { postId ->
                     navController.navigate(PostEditRoute(postId))
                 },
+                viewModel = viewModel(factory = postViewModelFactory { PostDetailViewModel(it) }),
                 snackBarState = snackBarState
             )
         }
@@ -59,6 +63,7 @@ fun NavGraph(
                 onPostCreated = {
                     navController.popBackStack()
                 },
+                viewModel = viewModel(factory = postViewModelFactory { PostCreateViewModel(it) }),
                 snackBarState = snackBarState
             )
         }
@@ -74,6 +79,7 @@ fun NavGraph(
                 onPostUpdated = {
                     navController.popBackStack()
                 },
+                viewModel = viewModel(factory = postViewModelFactory { PostEditViewModel(it) }),
                 snackBarState = snackBarState
             )
         }

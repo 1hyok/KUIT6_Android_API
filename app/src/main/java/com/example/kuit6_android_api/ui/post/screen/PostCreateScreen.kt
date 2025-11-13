@@ -51,12 +51,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.kuit6_android_api.di.AppContainer
 import com.example.kuit6_android_api.ui.post.viewmodel.PostCreateViewModel
+import com.example.kuit6_android_api.ui.post.viewmodel.postViewModelFactory
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,17 +62,7 @@ import kotlinx.coroutines.launch
 fun PostCreateScreen(
     onNavigateBack: () -> Unit,
     onPostCreated: () -> Unit,
-    viewModel: PostCreateViewModel = viewModel<PostCreateViewModel>(
-        //레포지토리 패턴을 위해 레포지토리를 뷰모델에 파라미터로 전달
-        //레포지토리는 수동 주입(App Container)을 통해 가져옴
-        //뷰모델에 파라미터를 전달하기 위해서 Factory 패턴을 사용
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val appContainer = AppContainer()
-                return PostCreateViewModel(appContainer.postRepository) as T
-            }
-        }
-    ),
+    viewModel: PostCreateViewModel = viewModel(factory = postViewModelFactory { PostCreateViewModel(it) }),
     snackBarState: SnackbarHostState
 ) {
     val context = LocalContext.current

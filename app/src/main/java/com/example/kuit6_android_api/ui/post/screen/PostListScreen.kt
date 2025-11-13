@@ -26,26 +26,17 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.kuit6_android_api.di.AppContainer
 import com.example.kuit6_android_api.ui.post.component.PostItem
 import com.example.kuit6_android_api.ui.post.viewmodel.PostListViewModel
+import com.example.kuit6_android_api.ui.post.viewmodel.postViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostListScreen(
     onPostClick: (Long) -> Unit,
     onCreatePostClick: () -> Unit,
-    viewModel: PostListViewModel = viewModel<PostListViewModel>(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val appContainer = AppContainer()
-                return PostListViewModel(appContainer.postRepository) as T
-            }
-        }
-    )
+    viewModel: PostListViewModel = viewModel(factory = postViewModelFactory { PostListViewModel(it) })
 ) {
     val uiState = viewModel.uiState
     val posts = uiState.posts

@@ -44,12 +44,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.kuit6_android_api.di.AppContainer
 import com.example.kuit6_android_api.ui.post.viewmodel.PostDetailViewModel
+import com.example.kuit6_android_api.ui.post.viewmodel.postViewModelFactory
 import com.example.kuit6_android_api.util.formatDateTime
 import kotlinx.coroutines.launch
 
@@ -59,14 +57,7 @@ fun PostDetailScreen(
     postId: Long,
     onNavigateBack: () -> Unit,
     onEditClick: (Long) -> Unit = {},
-    viewModel: PostDetailViewModel = viewModel<PostDetailViewModel>(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val appContainer = AppContainer()
-                return PostDetailViewModel(appContainer.postRepository) as T
-            }
-        }
-    ),
+    viewModel: PostDetailViewModel = viewModel(factory = postViewModelFactory { PostDetailViewModel(it) }),
     snackBarState: SnackbarHostState
 ) {
     val uiState = viewModel.uiState
