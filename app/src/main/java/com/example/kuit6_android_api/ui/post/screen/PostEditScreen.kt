@@ -62,6 +62,7 @@ fun PostEditScreen(
     postId: Long,
     onNavigateBack: () -> Unit,
     onPostUpdated: () -> Unit,
+    // Repository는 postViewModelFactory를 통해 수동 주입(App Container)됩니다
     viewModel: PostEditViewModel = viewModel(factory = postViewModelFactory { PostEditViewModel(it) }),
     snackBarState: SnackbarHostState
 ) {

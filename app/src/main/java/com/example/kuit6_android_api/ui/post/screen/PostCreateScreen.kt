@@ -62,6 +62,7 @@ import kotlinx.coroutines.launch
 fun PostCreateScreen(
     onNavigateBack: () -> Unit,
     onPostCreated: () -> Unit,
+    // Repository는 postViewModelFactory를 통해 수동 주입(App Container)됩니다
     viewModel: PostCreateViewModel = viewModel(factory = postViewModelFactory { PostCreateViewModel(it) }),
     snackBarState: SnackbarHostState
 ) {
