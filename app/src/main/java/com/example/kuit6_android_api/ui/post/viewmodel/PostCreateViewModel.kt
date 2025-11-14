@@ -24,7 +24,6 @@ class PostCreateViewModel(
     private val repository: PostRepository
     // 의존성 주입:뷰모델의 파라미터로 Repository를 전달하는 것
 ) : ViewModel() {
-    //st
     var uiState by mutableStateOf(PostCreateUiState())
         private set
 

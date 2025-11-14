@@ -15,6 +15,8 @@ class AppContainer { //모든 의존성을 AppContainer 한 곳에서 관리하�
 
     // 원래:뷰모델 -> ApiService 직접 참조
     // 현재:뷰모델 -> Repository -> ApiService Repository 거쳐 참조
+        // 파라미터로 전달 : 의존성 수동 주입
         PostRepositoryImpl(apiService)
+        //자동:라이브러리가 있다 다음 주차
     }
 }
