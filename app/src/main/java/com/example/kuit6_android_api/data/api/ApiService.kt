@@ -54,12 +54,12 @@ interface ApiService {
         @Part file: MultipartBody.Part
     ): BaseResponse<Map<String, String>>
 
-    @POST
+    @POST("/api/auth/signup")
     suspend fun signup(
         @Body request: LoginRequest
     ): BaseResponse<LoginResponse>
 
-    @POST
+    @POST("/api/auth/login")
     suspend fun login(
         @Body request: LoginRequest
     ): BaseResponse<LoginResponse>

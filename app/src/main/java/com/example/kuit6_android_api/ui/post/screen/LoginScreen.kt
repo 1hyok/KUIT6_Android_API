@@ -68,10 +68,14 @@ fun LoginScreen(
             }
 
             Row {
-                Button(onClick = {}) {
+                Button(onClick = {
+                    viewModel.login()
+                }) {
                     Text("로그인")
                 }
-                Button(onClick = {}) {
+                Button(onClick = {
+                    viewModel.signup()
+                }) {
                     Text("회원가입")
                 }
             }

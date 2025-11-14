@@ -6,6 +6,8 @@ import com.example.kuit6_android_api.data.repository.LoginRepository
 import com.example.kuit6_android_api.data.repository.LoginRepositoryImpl
 import com.example.kuit6_android_api.data.repository.PostRepository
 import com.example.kuit6_android_api.data.repository.PostRepositoryImpl
+import com.example.kuit6_android_api.data.repository.TokenRepository
+import com.example.kuit6_android_api.data.repository.TokenRepositoryImpl
 
 class AppContainer { //모든 의존성을 AppContainer 한 곳에서 관리하게 함
     private val apiService: ApiService by lazy{
@@ -24,5 +26,9 @@ class AppContainer { //모든 의존성을 AppContainer 한 곳에서 관리하�
 
     val loginRepository: LoginRepository by lazy{
         LoginRepositoryImpl(apiService)
+    }
+
+    val tokenRepository: TokenRepository by lazy{
+        TokenRepositoryImpl()
     }
 }

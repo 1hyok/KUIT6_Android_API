@@ -12,10 +12,12 @@ import com.example.kuit6_android_api.ui.post.screen.PostCreateScreen
 import com.example.kuit6_android_api.ui.post.screen.PostDetailScreen
 import com.example.kuit6_android_api.ui.post.screen.PostEditScreen
 import com.example.kuit6_android_api.ui.post.screen.PostListScreen
+import com.example.kuit6_android_api.ui.post.viewmodel.LoginViewModel
 import com.example.kuit6_android_api.ui.post.viewmodel.PostCreateViewModel
 import com.example.kuit6_android_api.ui.post.viewmodel.PostDetailViewModel
 import com.example.kuit6_android_api.ui.post.viewmodel.PostEditViewModel
 import com.example.kuit6_android_api.ui.post.viewmodel.PostListViewModel
+import com.example.kuit6_android_api.ui.post.viewmodel.loginViewModelFactory
 import com.example.kuit6_android_api.ui.post.viewmodel.postViewModelFactory
 
 @Composable
@@ -93,7 +95,12 @@ fun NavGraph(
             LoginScreen(
                 onNavigateBack = {
                     navController.popBackStack()
-                }
+                },
+                viewModel = viewModel(factory = loginViewModelFactory {
+                    LoginViewModel(
+                        loginRepository = it
+                    )
+                })
             )
         }
     }
