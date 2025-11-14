@@ -2,14 +2,15 @@ package com.example.kuit6_android_api.ui.post.viewmodel
 
 import android.content.Context
 import android.net.Uri
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kuit6_android_api.data.repository.PostRepository
 import com.example.kuit6_android_api.data.model.response.PostResponse
 import com.example.kuit6_android_api.util.UriUtils
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -24,17 +25,17 @@ data class PostEditUiState(
 class PostEditViewModel(
     private val repository: PostRepository
 ) : ViewModel() {
-    var uiState by mutableStateOf(PostEditUiState())
-        private set
+    private val _uiState = MutableStateFlow(PostEditUiState())
+    val uiState: StateFlow<PostEditUiState> = _uiState.asStateFlow()
 
     fun getPostDetail(postId: Long) {
         viewModelScope.launch {
             repository.getPostDetail(postId)
                 .onSuccess { post ->
-                    uiState = uiState.copy(postDetail = post)
+                    _uiState.update { it.copy(postDetail = post) }
                 }
                 .onFailure {
-                    uiState = uiState.copy(postDetail = null)
+                    _uiState.update { it.copy(postDetail = null) }
                 }
         }
     }
@@ -49,14 +50,14 @@ class PostEditViewModel(
         viewModelScope.launch {
             repository.updatePost(postId, title, content, imageUrl)
                 .onSuccess {
-                    uiState = uiState.copy(uploadedImageUrl = null)
+                    _uiState.update { it.copy(uploadedImageUrl = null) }
                     onSuccess()
                 }
         }
     }
 
     fun clearUploadedImageUrl() {
-        uiState = uiState.copy(uploadedImageUrl = null)
+        _uiState.update { it.copy(uploadedImageUrl = null) }
     }
 
     fun uploadImage(
@@ -66,10 +67,10 @@ class PostEditViewModel(
         onError: (String) -> Unit = {}
     ) {
         viewModelScope.launch {
-            uiState = uiState.copy(isUploading = true)
+            _uiState.update { it.copy(isUploading = true) }
             val file = UriUtils.uriToFile(context, uri)
             if (file == null) {
-                uiState = uiState.copy(isUploading = false)
+                _uiState.update { it.copy(isUploading = false) }
                 onError("파일 변환 실패")
                 return@launch
             }
@@ -79,14 +80,16 @@ class PostEditViewModel(
 
             repository.uploadImage(body)
                 .onSuccess { imageUrl ->
-                    uiState = uiState.copy(
-                        isUploading = false,
-                        uploadedImageUrl = imageUrl
-                    )
+                    _uiState.update {
+                        it.copy(
+                            isUploading = false,
+                            uploadedImageUrl = imageUrl
+                        )
+                    }
                     onSuccess(imageUrl)
                 }
                 .onFailure { error ->
-                    uiState = uiState.copy(isUploading = false)
+                    _uiState.update { it.copy(isUploading = false) }
                     onError(error.message ?: "업로드 실패")
                 }
         }

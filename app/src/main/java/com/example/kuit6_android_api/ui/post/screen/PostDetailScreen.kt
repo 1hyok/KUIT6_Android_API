@@ -32,6 +32,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,7 +62,7 @@ fun PostDetailScreen(
     viewModel: PostDetailViewModel = viewModel(factory = postViewModelFactory { PostDetailViewModel(it) }),
     snackBarState: SnackbarHostState
 ) {
-    val uiState = viewModel.uiState
+    val uiState by viewModel.uiState.collectAsState()
     val post = uiState.postDetail
     var showDeleteDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -90,8 +91,7 @@ fun PostDetailScreen(
             )
         }
     ) { paddingValues ->
-        post?.let {
-
+        post?.let { postDetail ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -112,9 +112,9 @@ fun PostDetailScreen(
                             .padding(16.dp)
                     ) {
                         // 프로필 이미지
-                        if (it.author.profileImageUrl != null) {
+                        if (postDetail.author.profileImageUrl != null) {
                             AsyncImage(
-                                model = it.author.profileImageUrl,
+                                model = postDetail.author.profileImageUrl,
                                 contentDescription = "프로필 이미지",
                                 modifier = Modifier
                                     .size(44.dp)
@@ -140,14 +140,14 @@ fun PostDetailScreen(
 
                         Column {
                             Text(
-                                text = it.author.username,
+                                text = postDetail.author.username,
                                 style = MaterialTheme.typography.bodyLarge.copy(
                                     fontWeight = FontWeight.SemiBold
                                 ),
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = formatDateTime(it.createdAt),
+                                text = formatDateTime(postDetail.createdAt),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -156,7 +156,7 @@ fun PostDetailScreen(
                 }
 
                 // 이미지
-                it.imageUrl?.let { imageUrl ->
+                postDetail.imageUrl?.let { imageUrl ->
                     AsyncImage(
                         model = imageUrl,
                         contentDescription = "게시글 이미지",
@@ -172,7 +172,7 @@ fun PostDetailScreen(
                     modifier = Modifier.padding(20.dp)
                 ) {
                     Text(
-                        text = it.title,
+                        text = postDetail.title,
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -182,7 +182,7 @@ fun PostDetailScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = it.content,
+                        text = postDetail.content,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground,
                         lineHeight = MaterialTheme.typography.bodyLarge.lineHeight.times(1.5f)
