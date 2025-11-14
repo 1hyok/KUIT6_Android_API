@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -95,16 +96,19 @@ fun LoginScreen(
 
             var buttonText by remember {
                 mutableStateOf("토큰 검증")
-
             }
             //토큰 검증 (시도 전)
             //토큰 검증 성공 (성공시)
-            //토큰 검증 성공 (실패시)
+            //토큰 검증 실패 (실패시)
+
+            LaunchedEffect(uiState.verificationButtonText) {
+                buttonText = uiState.verificationButtonText
+            }
 
             Button(onClick = {
-                // 토큰 검증 api 연동
+                viewModel.verifyToken(context)
             }) {
-                Text("토큰 검증")
+                Text(buttonText)
             }
         }
     }
