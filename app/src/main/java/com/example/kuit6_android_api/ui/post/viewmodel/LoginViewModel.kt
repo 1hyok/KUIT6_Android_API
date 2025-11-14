@@ -1,8 +1,10 @@
 package com.example.kuit6_android_api.ui.post.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kuit6_android_api.data.repository.LoginRepository
+import com.example.kuit6_android_api.data.repository.TokenRepository
 import com.example.kuit6_android_api.ui.post.state.LoginUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
+    private val tokenRepository: TokenRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -34,23 +37,34 @@ class LoginViewModel(
         }
     }
 
-    fun signup() {
+    fun signup(context: Context) {
         viewModelScope.launch {
-            val result = loginRepository.signup(
+            loginRepository.signup(
                 id = uiState.value.id,
                 password = uiState.value.password
-            )
+            ).onSuccess {
+                tokenRepository.saveToken(context, it.token)
+            }
         }
     }
 
-    fun login() {
+    fun login(context: Context) {
         viewModelScope.launch {
-            val result = loginRepository.login(
+            loginRepository.login(
                 id = uiState.value.id,
                 password = uiState.value.password
-            )
+            ).onSuccess {
+                tokenRepository.saveToken(context, it.token)
+            }
         }
     }
 
-
+    fun getToken(context: Context) {
+        viewModelScope.launch {
+            val token = tokenRepository.getToken(context)
+            _uiState.update {
+                it.copy(token = token ?: "")
+            }
+        }
+    }
 }

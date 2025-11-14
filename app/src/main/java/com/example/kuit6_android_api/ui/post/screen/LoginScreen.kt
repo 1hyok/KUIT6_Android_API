@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -28,6 +29,7 @@ fun LoginScreen(
     viewModel: LoginViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     Scaffold(Modifier.fillMaxSize()) { innerPadding ->
         Column(
@@ -67,17 +69,24 @@ fun LoginScreen(
                 Text("자동 로그인")
             }
 
+
             Row {
                 Button(onClick = {
-                    viewModel.login()
+                    viewModel.login(context)
                 }) {
                     Text("로그인")
                 }
                 Button(onClick = {
-                    viewModel.signup()
+                    viewModel.signup(context)
                 }) {
                     Text("회원가입")
                 }
+            }
+            Text("토큰: ${uiState.token}")
+            Button(onClick = {
+                viewModel.getToken(context = context)
+            }) {
+                Text("토큰 조회")
             }
         }
     }

@@ -96,9 +96,10 @@ fun NavGraph(
                 onNavigateBack = {
                     navController.popBackStack()
                 },
-                viewModel = viewModel(factory = loginViewModelFactory {
+                viewModel = viewModel(factory = loginViewModelFactory { loginRepo, tokenRepo ->
                     LoginViewModel(
-                        loginRepository = it
+                        loginRepository = loginRepo,
+                        tokenRepository = tokenRepo
                     )
                 })
             )
