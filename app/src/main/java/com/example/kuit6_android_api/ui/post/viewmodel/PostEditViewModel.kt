@@ -5,37 +5,33 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kuit6_android_api.data.repository.PostRepository
-import com.example.kuit6_android_api.data.model.response.PostResponse
+import com.example.kuit6_android_api.ui.post.state.PostEditUiState
 import com.example.kuit6_android_api.util.UriUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 
-data class PostEditUiState(
-    val postDetail: PostResponse? = null,
-    val uploadedImageUrl: String? = null,
-    val isUploading: Boolean = false
-)
-
 class PostEditViewModel(
     private val repository: PostRepository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(PostEditUiState())
+    private val _uiState = MutableStateFlow<PostEditUiState>(PostEditUiState.Loading)
     val uiState: StateFlow<PostEditUiState> = _uiState.asStateFlow()
 
     fun getPostDetail(postId: Long) {
         viewModelScope.launch {
+            _uiState.value = PostEditUiState.Loading
             repository.getPostDetail(postId)
                 .onSuccess { post ->
-                    _uiState.update { it.copy(postDetail = post) }
+                    _uiState.value = PostEditUiState.Success(postDetail = post)
                 }
-                .onFailure {
-                    _uiState.update { it.copy(postDetail = null) }
+                .onFailure { error ->
+                    _uiState.value = PostEditUiState.Error(
+                        message = error.message ?: "error"
+                    )
                 }
         }
     }
@@ -48,16 +44,28 @@ class PostEditViewModel(
         onSuccess: () -> Unit = {}
     ) {
         viewModelScope.launch {
+            _uiState.value = PostEditUiState.Loading
             repository.updatePost(postId, title, content, imageUrl)
                 .onSuccess {
-                    _uiState.update { it.copy(uploadedImageUrl = null) }
+                    val currentState = _uiState.value
+                    if (currentState is PostEditUiState.Success) {
+                        _uiState.value = currentState.copy(uploadedImageUrl = null)
+                    }
                     onSuccess()
+                }
+                .onFailure { error ->
+                    _uiState.value = PostEditUiState.Error(
+                        message = error.message ?: "error"
+                    )
                 }
         }
     }
 
     fun clearUploadedImageUrl() {
-        _uiState.update { it.copy(uploadedImageUrl = null) }
+        val currentState = _uiState.value
+        if (currentState is PostEditUiState.Success) {
+            _uiState.value = currentState.copy(uploadedImageUrl = null)
+        }
     }
 
     fun uploadImage(
@@ -67,10 +75,16 @@ class PostEditViewModel(
         onError: (String) -> Unit = {}
     ) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isUploading = true) }
+            val currentState = _uiState.value
+            if (currentState is PostEditUiState.Success) {
+                _uiState.value = currentState.copy(isUploading = true)
+            }
             val file = UriUtils.uriToFile(context, uri)
             if (file == null) {
-                _uiState.update { it.copy(isUploading = false) }
+                val state = _uiState.value
+                if (state is PostEditUiState.Success) {
+                    _uiState.value = state.copy(isUploading = false)
+                }
                 onError("파일 변환 실패")
                 return@launch
             }
@@ -80,17 +94,19 @@ class PostEditViewModel(
 
             repository.uploadImage(body)
                 .onSuccess { imageUrl ->
-                    _uiState.update {
-                        it.copy(
-                            isUploading = false,
-                            uploadedImageUrl = imageUrl
+                    val state = _uiState.value
+                    if (state is PostEditUiState.Success) {
+                        _uiState.value = state.copy(
+                            uploadedImageUrl = imageUrl,
+                            isUploading = false
                         )
                     }
                     onSuccess(imageUrl)
                 }
                 .onFailure { error ->
-                    _uiState.update { it.copy(isUploading = false) }
-                    onError(error.message ?: "업로드 실패")
+                    _uiState.value = PostEditUiState.Error(
+                        message = error.message ?: "업로드 실패"
+                    )
                 }
         }
     }
