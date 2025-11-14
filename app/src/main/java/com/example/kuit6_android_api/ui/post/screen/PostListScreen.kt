@@ -1,5 +1,6 @@
 package com.example.kuit6_android_api.ui.post.screen
 
+import android.R.attr.onClick
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,6 +39,7 @@ import com.example.kuit6_android_api.ui.post.viewmodel.postViewModelFactory
 fun PostListScreen(
     onPostClick: (Long) -> Unit,
     onCreatePostClick: () -> Unit,
+    onLoginClick: () -> Unit,
     viewModel: PostListViewModel = viewModel(factory = postViewModelFactory { PostListViewModel(it) })
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -55,10 +57,15 @@ fun PostListScreen(
             )
         },
         floatingActionButton = {
-            Row(modifier = Modifier.fillMaxWidth()
-                .padding(horizontal=20.dp),
-                horizontalArrangement = Arrangement.SpaceBetween){
-                FloatingActionButton(onClick = {}) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                FloatingActionButton(
+                    onClick = onLoginClick
+                ) {
                     Icon(Icons.Default.Person, contentDescription = "로그인")
                 }
                 FloatingActionButton(onClick = onCreatePostClick) {
@@ -72,6 +79,7 @@ fun PostListScreen(
             is PostListUiState.Loading -> {
                 CircularProgressIndicator()
             }
+
             is PostListUiState.Success -> {
                 LazyColumn(
                     modifier = Modifier
@@ -89,6 +97,7 @@ fun PostListScreen(
                     }
                 }
             }
+
             is PostListUiState.Error -> {
                 // Error 상태 처리 (practice-only와 동일하게 빈 상태)
             }

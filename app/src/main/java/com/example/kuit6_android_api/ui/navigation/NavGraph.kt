@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.kuit6_android_api.ui.post.screen.LoginScreen
 import com.example.kuit6_android_api.ui.post.screen.PostCreateScreen
 import com.example.kuit6_android_api.ui.post.screen.PostDetailScreen
 import com.example.kuit6_android_api.ui.post.screen.PostEditScreen
@@ -34,6 +35,9 @@ fun NavGraph(
                 },
                 onCreatePostClick = {
                     navController.navigate(PostCreateRoute)
+                },
+                onLoginClick = {
+                    navController.navigate(LoginRoute)
                 },
                 viewModel = viewModel(factory = postViewModelFactory { PostListViewModel(it) })
             )
@@ -81,6 +85,15 @@ fun NavGraph(
                 },
                 viewModel = viewModel(factory = postViewModelFactory { PostEditViewModel(it) }),
                 snackBarState = snackBarState
+            )
+        }
+        composable<LoginRoute> { backStackEntry ->
+            val route = backStackEntry.toRoute<LoginRoute>()
+
+            LoginScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
             )
         }
     }

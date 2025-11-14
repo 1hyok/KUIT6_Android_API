@@ -12,13 +12,23 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.kuit6_android_api.ui.post.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    onNavigateBack: () -> Unit,
+    viewModel: LoginViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Scaffold(Modifier.fillMaxSize()) { innerPadding ->
         Column(
             Modifier
@@ -29,14 +39,18 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
-                value = "",
-                onValueChange = {},
+                value = uiState.id,
+                onValueChange = {
+                    viewModel.onIdChanged(it)
+                },
                 Modifier.fillMaxWidth(),
                 placeholder = { Text("아이디") }
             )
             TextField(
-                value = "",
-                onValueChange = {},
+                value = uiState.password,
+                onValueChange = {
+                    viewModel.onPasswordChanged(it)
+                },
                 Modifier.fillMaxWidth(),
                 placeholder = { Text("비밀번호") }
             )
@@ -45,21 +59,22 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked = false,
-                    onCheckedChange = {}
+                    checked = uiState.isAutoLogin,
+                    onCheckedChange = {
+                        viewModel.onAutoLoginChanged(it)
+                    }
                 )
                 Text("자동 로그인")
             }
 
-            Button(onClick = {}) {
-                Text("로그인")
+            Row {
+                Button(onClick = {}) {
+                    Text("로그인")
+                }
+                Button(onClick = {}) {
+                    Text("회원가입")
+                }
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun LoginScreenPreview() {
-    LoginScreen()
 }

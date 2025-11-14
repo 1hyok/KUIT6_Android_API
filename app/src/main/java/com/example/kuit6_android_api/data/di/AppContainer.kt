@@ -2,6 +2,8 @@ package com.example.kuit6_android_api.data.di
 
 import com.example.kuit6_android_api.data.api.ApiService
 import com.example.kuit6_android_api.data.api.RetrofitClient
+import com.example.kuit6_android_api.data.repository.LoginRepository
+import com.example.kuit6_android_api.data.repository.LoginRepositoryImpl
 import com.example.kuit6_android_api.data.repository.PostRepository
 import com.example.kuit6_android_api.data.repository.PostRepositoryImpl
 
@@ -18,5 +20,9 @@ class AppContainer { //모든 의존성을 AppContainer 한 곳에서 관리하�
         // 파라미터로 전달 : 의존성 수동 주입
         PostRepositoryImpl(apiService)
         //자동:라이브러리가 있다 다음 주차
+    }
+
+    val loginRepository: LoginRepository by lazy{
+        LoginRepositoryImpl(apiService)
     }
 }
