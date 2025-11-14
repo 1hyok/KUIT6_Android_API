@@ -43,4 +43,17 @@ class LoginRepositoryImpl(
             Log.e("LoginRepository", error.message.toString())
         }
     }
+    
+    override suspend fun verifyToken(): Result<Unit> {//vertifyToken() 구현
+        return runCatching {
+            val response = apiService.getPosts()
+            if (response.success) {
+                Unit
+            } else {
+                throw Exception(response.message ?: "토큰 검증 실패")
+            }
+        }.onFailure { error ->
+            Log.e("LoginRepository", error.message.toString())
+        }
+    }
 }

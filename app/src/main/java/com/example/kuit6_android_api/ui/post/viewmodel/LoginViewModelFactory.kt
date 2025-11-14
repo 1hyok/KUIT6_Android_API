@@ -9,7 +9,8 @@ import com.example.kuit6_android_api.data.repository.LoginRepository
 import com.example.kuit6_android_api.data.repository.TokenRepository
 
 inline fun <reified VM : ViewModel> loginViewModelFactory(
-    crossinline create: (LoginRepository, TokenRepository) -> VM
+    crossinline create: (LoginRepository, TokenRepository, App) -> VM
+    //app 전달
 ): ViewModelProvider.Factory = viewModelFactory {
     initializer {
         val application = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
@@ -17,6 +18,6 @@ inline fun <reified VM : ViewModel> loginViewModelFactory(
 
         val loginRepository = application.container.loginRepository
         val tokenRepository = application.container.tokenRepository
-        create(loginRepository, tokenRepository)
+        create(loginRepository, tokenRepository, application)
     }
 }

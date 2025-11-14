@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -65,7 +66,8 @@ fun LoginScreen(
                 Checkbox(
                     checked = uiState.isAutoLogin,
                     onCheckedChange = {
-                        viewModel.onAutoLoginChanged(it)
+                        viewModel.onAutoLoginChanged(it, context)
+                        //context 전달
                     }
                 )
                 Text("자동 로그인")
@@ -91,7 +93,7 @@ fun LoginScreen(
                 Text("토큰 조회")
             }
 
-            var buttonText = remember {
+            var buttonText by remember {
                 mutableStateOf("토큰 검증")
 
             }
