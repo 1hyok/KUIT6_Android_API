@@ -7,6 +7,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 class AuthInterceptor(private val context: Context): Interceptor {
+    //발생한 요청을 가로채 수정
     //Interceptor에서 DataStore 접근을 하기 위해 Context 파라미터 필요
     private val tokenRepository = TokenRepositoryImpl()
     
@@ -23,7 +24,8 @@ class AuthInterceptor(private val context: Context): Interceptor {
         token?.let {
             //token 변수에 값이 존재할 때
             requestBuilder.addHeader("Authorization", "Bearer $it")
-            //"Authorization"이라는 키와 "Bearer $it"이라는 값의 쌍으로 이루어진 헤더를 추가
+            // 서버로 보내는 요청마다 헤더를 추가
+            // 헤더는 "Authorization"라는 이름과 토큰 $it의 쌍으로 이루어짐
             //Bearer:인증 방식을 나타내는 일종의 접두사
             //Authorization:HTTP 통신 규약에 따라 서버와 클라이언트 간 정보를 주고 받을 때 사용하는 헤더 중 하나
         }
