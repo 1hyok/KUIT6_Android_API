@@ -27,10 +27,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,11 +47,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.kuit6_android_api.ui.post.viewmodel.PostDetailViewModel
-import com.example.kuit6_android_api.ui.post.viewmodel.postViewModelFactory
 import com.example.kuit6_android_api.ui.post.state.PostDetailUiState
+import com.example.kuit6_android_api.ui.post.viewmodel.PostDetailViewModel
 import com.example.kuit6_android_api.util.formatDateTime
 import kotlinx.coroutines.launch
 
@@ -62,7 +61,7 @@ fun PostDetailScreen(
     onNavigateBack: () -> Unit,
     onEditClick: (Long) -> Unit = {},
     // Repository는 postViewModelFactory를 통해 수동 주입(App Container)됩니다
-    viewModel: PostDetailViewModel = viewModel(factory = postViewModelFactory { PostDetailViewModel(it) }),
+    viewModel: PostDetailViewModel = hiltViewModel(),
     snackBarState: SnackbarHostState
 ) {
     val uiState by viewModel.uiState.collectAsState()

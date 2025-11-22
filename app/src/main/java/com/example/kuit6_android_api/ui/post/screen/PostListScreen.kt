@@ -1,6 +1,5 @@
 package com.example.kuit6_android_api.ui.post.screen
 
-import android.R.attr.onClick
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,11 +27,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kuit6_android_api.ui.post.component.PostItem
 import com.example.kuit6_android_api.ui.post.state.PostListUiState
 import com.example.kuit6_android_api.ui.post.viewmodel.PostListViewModel
-import com.example.kuit6_android_api.ui.post.viewmodel.postViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +38,7 @@ fun PostListScreen(
     onPostClick: (Long) -> Unit,
     onCreatePostClick: () -> Unit,
     onLoginClick: () -> Unit,
-    viewModel: PostListViewModel = viewModel(factory = postViewModelFactory { PostListViewModel(it) })
+    viewModel: PostListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

@@ -51,11 +51,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.kuit6_android_api.ui.post.viewmodel.PostEditViewModel
-import com.example.kuit6_android_api.ui.post.viewmodel.postViewModelFactory
 import com.example.kuit6_android_api.ui.post.state.PostEditUiState
+import com.example.kuit6_android_api.ui.post.viewmodel.PostEditViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,7 +64,7 @@ fun PostEditScreen(
     onNavigateBack: () -> Unit,
     onPostUpdated: () -> Unit,
     // Repository는 postViewModelFactory를 통해 수동 주입(App Container)됩니다
-    viewModel: PostEditViewModel = viewModel(factory = postViewModelFactory { PostEditViewModel(it) }),
+    viewModel: PostEditViewModel = hiltViewModel(),
     snackBarState: SnackbarHostState
 ) {
     val context = LocalContext.current

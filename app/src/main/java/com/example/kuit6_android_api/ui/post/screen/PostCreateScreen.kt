@@ -52,11 +52,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.kuit6_android_api.ui.post.viewmodel.PostCreateViewModel
-import com.example.kuit6_android_api.ui.post.viewmodel.postViewModelFactory
 import com.example.kuit6_android_api.ui.post.state.PostCreateUiState
+import com.example.kuit6_android_api.ui.post.viewmodel.PostCreateViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,7 +64,7 @@ fun PostCreateScreen(
     onNavigateBack: () -> Unit,
     onPostCreated: () -> Unit,
     // Repository는 postViewModelFactory를 통해 수동 주입(App Container)
-    viewModel: PostCreateViewModel = viewModel(factory = postViewModelFactory { PostCreateViewModel(it) }),
+    viewModel: PostCreateViewModel = hiltViewModel(),
     snackBarState: SnackbarHostState
 ) {
     val context = LocalContext.current
@@ -129,6 +128,7 @@ fun PostCreateScreen(
                     CircularProgressIndicator()
                 }
             }
+
             is PostCreateUiState.Success -> {
                 val successState = uiState as PostCreateUiState.Success
                 Column(
@@ -288,7 +288,12 @@ fun PostCreateScreen(
                     Button(
                         onClick = {
                             val finalAuthor = author
-                            viewModel.createPost(finalAuthor, title, content, successState.uploadedImageUrl) {
+                            viewModel.createPost(
+                                finalAuthor,
+                                title,
+                                content,
+                                successState.uploadedImageUrl
+                            ) {
                                 onPostCreated()
                                 scope.launch { snackBarState.showSnackbar("게시글이 작성되었습니다.") }
                             }
@@ -319,6 +324,7 @@ fun PostCreateScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
+
             is PostCreateUiState.Error -> {
                 val errorState = uiState as PostCreateUiState.Error
                 Box(
@@ -344,7 +350,7 @@ fun PostCreateScreenPreview() {
         PostCreateScreen(
             onNavigateBack = {},
             onPostCreated = {},
-            snackBarState = remember{ SnackbarHostState()}
+            snackBarState = remember { SnackbarHostState() }
         )
     }
 }

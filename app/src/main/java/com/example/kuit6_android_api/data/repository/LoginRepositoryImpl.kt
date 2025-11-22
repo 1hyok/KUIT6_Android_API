@@ -2,7 +2,6 @@ package com.example.kuit6_android_api.data.repository
 
 import android.util.Log
 import com.example.kuit6_android_api.data.api.ApiService
-import com.example.kuit6_android_api.data.api.RetrofitClient.apiService
 import com.example.kuit6_android_api.data.model.request.LoginRequest
 import com.example.kuit6_android_api.data.model.response.LoginResponse
 import javax.inject.Inject

@@ -2,7 +2,6 @@ package com.example.kuit6_android_api
 
 import android.app.Application
 import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.instance
-import com.example.kuit6_android_api.data.api.RetrofitClient
 import dagger.hilt.android.HiltAndroidApp
 
 
