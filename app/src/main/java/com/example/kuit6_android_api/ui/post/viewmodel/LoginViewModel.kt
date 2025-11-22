@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(// 파라미터를 Hilt가 자동 주입
+class LoginViewModel @Inject constructor(// 파라미터를 Hilt가 자동 주입함으로써 LoginViewModel를 담은 팩토리를 직접 전달하던 기존과 달리 hiltViewModel()로 퉁침
     private val loginRepository: LoginRepository,
     private val tokenRepository: TokenRepository,
     private val tokenApiRepository: TokenApiRepository
