@@ -79,9 +79,9 @@ class LoginViewModel @Inject constructor(
         }
     }
     
-    fun verifyToken(context: Context) {
-        //토큰 검증 수행 함수
+    fun validateToken(context: Context) {
         viewModelScope.launch {
+            // 검증 시작 상태 업데이트
             _uiState.update {
                 it.copy(
                     isVerifying = true,
@@ -89,23 +89,40 @@ class LoginViewModel @Inject constructor(
                 )
             }
             
-            tokenApiRepository.validateToken()
-                .onSuccess {
+            // 토큰 검증 API 호출
+            val result = tokenRepository.validateToken(context)
+            
+            // 로딩 완료
+            _uiState.update {
+                it.copy(isVerifying = false)
+            }
+            
+            result.onSuccess { isValid ->
+                // 검증 성공
+                if (isValid) {
                     _uiState.update {
                         it.copy(
-                            isVerifying = false,
                             verificationButtonText = "토큰 검증 성공"
                         )
                     }
-                }
-                .onFailure {
+                } else {
+                    // 검증 실패
+                    tokenRepository.deleteToken() // 토큰 삭제
+                    tokenRepository.saveAutoLogin(false) // 자동 로그인 해제
                     _uiState.update {
                         it.copy(
-                            isVerifying = false,
-                            verificationButtonText = "토큰 검증 실패"
+                            verificationButtonText = "토큰 검증 실패",
+                            isAutoLogin = false // UI에도 반영
                         )
                     }
                 }
+            }.onFailure {
+                _uiState.update {
+                    it.copy(
+                        verificationButtonText = "토큰 검증 실패"
+                    )
+                }
+            }
         }
     }
 
@@ -117,7 +134,8 @@ class LoginViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(isAutoLogin = true)
                 }
-                verifyToken(context)
+                // init 블록에서는 context를 사용할 수 없으므로 validateToken 호출 제거
+                // 필요시 Screen에서 호출하도록 변경
             }
         }
     }

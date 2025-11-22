@@ -106,7 +106,7 @@ fun LoginScreen(
             }
 
             Button(onClick = {
-                viewModel.verifyToken(context)
+                viewModel.validateToken(context)
             }) {
                 Text(buttonText)
             }

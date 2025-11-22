@@ -56,4 +56,18 @@ class TokenRepositoryImpl @Inject constructor(
             it.remove(TOKEN_KEY)
         }
     }
+    
+    // 토큰 검증 함수
+    override suspend fun validateToken(context: Context): Result<Boolean> {
+        return runCatching {
+            val response = apiService.validateToken()
+            if (response.success && response.data == true) {
+                true
+            } else {
+                throw Exception(response.message ?: "토큰 검증 실패")
+            }
+        }.onFailure { error ->
+            Log.e("TokenRepository", error.message.toString())
+        }
+    }
 }
