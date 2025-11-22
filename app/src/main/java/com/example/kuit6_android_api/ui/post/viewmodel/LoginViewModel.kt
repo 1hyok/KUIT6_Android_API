@@ -39,8 +39,7 @@ class LoginViewModel(
         }
         viewModelScope.launch {
             //뷰모델 생명주기에 맞춰 코루틴 실행
-            tokenRepository.saveAutoLogin(context, isAutoLogin)
-            //Context 파라미터를 통해 자동 로그인 값 변경 감지
+            tokenRepository.saveAutoLogin(isAutoLogin)
             //자동 로그인 값 변경 감지되면 DataStore에 저장하는 saveAutoLogin의 로직 수행
         }
     }
@@ -51,7 +50,7 @@ class LoginViewModel(
                 id = uiState.value.id,
                 password = uiState.value.password
             ).onSuccess {
-                tokenRepository.saveToken(context, it.token)
+                tokenRepository.saveToken(it.token)
             }
         }
     }
@@ -62,14 +61,14 @@ class LoginViewModel(
                 id = uiState.value.id,
                 password = uiState.value.password
             ).onSuccess {
-                tokenRepository.saveToken(context, it.token)
+                tokenRepository.saveToken(it.token)
             }
         }
     }
 
     fun getToken(context: Context) {
         viewModelScope.launch {
-            val token = tokenRepository.getToken(context)
+            val token = tokenRepository.getToken()
             _uiState.update {
                 it.copy(token = token ?: "")
             }
@@ -86,7 +85,7 @@ class LoginViewModel(
                 )
             }
             
-            loginRepository.verifyToken()
+            tokenRepository.validateToken()
                 .onSuccess {
                     _uiState.update {
                         it.copy(
@@ -109,7 +108,7 @@ class LoginViewModel(
     init{
         //자동 로그인되어 있으면 UI 상태 업데이트하고 토큰 검증
         viewModelScope.launch {
-            val isAutoLogin = tokenRepository.getAutoLogin(application)
+            val isAutoLogin = tokenRepository.getAutoLogin()
             if (isAutoLogin) {
                 _uiState.update {
                     it.copy(isAutoLogin = true)
