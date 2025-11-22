@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthInterceptor @Inject constructor(
-    private val tokenRepository: TokenRepository // Hilt가 자동 주입하면서 TokenRepository 인터페이스를 구현, Context도 포함
+    private val tokenRepository: TokenRepository // Hilt가 TokenRepositoryImpl을 생성해서 주입
 ) : Interceptor {
     //발생한 요청을 가로채 수정
 
