@@ -5,18 +5,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kuit6_android_api.App
 import com.example.kuit6_android_api.data.repository.LoginRepository
+import com.example.kuit6_android_api.data.repository.TokenApiRepository
 import com.example.kuit6_android_api.data.repository.TokenRepository
 import com.example.kuit6_android_api.ui.post.state.LoginUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel(
+@HiltViewModel
+class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository,
     private val tokenRepository: TokenRepository,//새 파라미터
-    private val application: App//init에서 자동 로그인 확인에 사용
+    private val tokenApiRepository: TokenApiRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -85,7 +89,7 @@ class LoginViewModel(
                 )
             }
             
-            tokenRepository.validateToken()
+            tokenApiRepository.validateToken()
                 .onSuccess {
                     _uiState.update {
                         it.copy(
@@ -113,7 +117,7 @@ class LoginViewModel(
                 _uiState.update {
                     it.copy(isAutoLogin = true)
                 }
-                verifyToken(application)
+                verifyToken(context)
             }
         }
     }

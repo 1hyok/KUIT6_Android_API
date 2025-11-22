@@ -49,27 +49,6 @@ class TokenRepositoryImpl @Inject constructor(
         //해당 플로우에서 방출되는 첫 번째 값, 즉, 현재 저장된 값
         return prefs[AUTO_LOGIN_KEY] ?: false
     }
-
-    // api 호출 함수
-    override suspend fun getValidateTokenApi(): Result<BaseResponse<Boolean>> {
-        return runCatching {
-            apiService.validateToken()
-        }
-    }
-    
-    // 토큰 검증 함수
-    override suspend fun validateToken(): Result<Boolean> {
-        return runCatching {
-            val response = apiService.validateToken()
-            if (response.success && response.data == true) {
-                true
-            } else {
-                throw Exception(response.message ?: "토큰 검증 실패")
-            }
-        }.onFailure { error ->
-            Log.e("TokenRepository", error.message.toString())
-        }
-    }
     
     // 토큰 삭제하는 함수
     override suspend fun deleteToken() {

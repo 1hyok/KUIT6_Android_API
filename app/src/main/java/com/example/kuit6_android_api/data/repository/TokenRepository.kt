@@ -7,13 +7,6 @@ interface TokenRepository {
     suspend fun getToken(): String?
     suspend fun saveAutoLogin(isAutoLogin: Boolean)
     suspend fun getAutoLogin(): Boolean
-
-    // api 호출 함수
-    suspend fun getValidateTokenApi(): Result<BaseResponse<Boolean>>
-    
-    // 토큰 검증 함수
-    suspend fun validateToken(): Result<Boolean>
-    
     // 토큰 삭제하는 함수
     suspend fun deleteToken()
 }

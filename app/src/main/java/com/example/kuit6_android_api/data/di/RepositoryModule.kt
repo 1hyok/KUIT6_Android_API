@@ -18,14 +18,18 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindLoginRepository(loginRepositoryImpl: LoginRepositoryImpl) : LoginRepository
+    abstract fun bindLoginRepository(impl: LoginRepositoryImpl) : LoginRepository
 
     @Binds
     @Singleton
-    abstract fun bindTokenRepository(tokenRepositoryImpl: TokenRepositoryImpl) : TokenRepository
+    abstract fun bindTokenRepository(impl: TokenRepositoryImpl) : TokenRepository
 
     @Binds
     @Singleton
-    abstract fun bindPostRepository(postRepositoryImpl: PostRepositoryImpl) : PostRepository
+    abstract fun bindPostRepository(impl: PostRepositoryImpl) : PostRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTokenApiRepository(impl: TokenRepositoryImpl) : TokenRepository
 
 }
