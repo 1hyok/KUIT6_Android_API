@@ -21,7 +21,7 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideLogginInterceptor(): HttpLoggingInterceptor =
+    fun provideLoginInterceptor(): HttpLoggingInterceptor =
         HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
@@ -29,7 +29,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        authInterceptor: AuthInterceptor,
+        authInterceptor: AuthInterceptor, // Hilt가 인터셉터를 자동으로 주입하므로써 인터셉터를 매번 생성할 필요가 없게 됨
         loggingInterceptor: HttpLoggingInterceptor
     ): okhttp3.OkHttpClient =
         OkHttpClient.Builder()

@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 @Singleton
 class LoginRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService // RetrofitClient.apiService로 접근하던 기존과 달리 자동 주입
 ) : LoginRepository {
     override suspend fun signup(id: String, password: String): Result<LoginResponse> {
         return runCatching {

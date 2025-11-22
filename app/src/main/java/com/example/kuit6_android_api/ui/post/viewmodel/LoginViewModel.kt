@@ -17,9 +17,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class LoginViewModel @Inject constructor(// 파라미터를 Hilt가 자동 주입
     private val loginRepository: LoginRepository,
-    private val tokenRepository: TokenRepository,//새 파라미터
+    private val tokenRepository: TokenRepository,
     private val tokenApiRepository: TokenApiRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())

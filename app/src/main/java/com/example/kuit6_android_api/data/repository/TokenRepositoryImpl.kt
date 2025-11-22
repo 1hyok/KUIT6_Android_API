@@ -22,7 +22,7 @@ val AUTO_LOGIN_KEY = booleanPreferencesKey("auto_login")
 
 @Singleton
 class TokenRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context //Hilt가 Context 자동 주입
 ):TokenRepository {
 
     override suspend fun saveToken(token: String) {
