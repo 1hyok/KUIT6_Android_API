@@ -15,6 +15,7 @@ inline fun <reified VM : ViewModel> loginViewModelFactory(
     initializer {
         val application = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
                 as App
+        // 어플리케이션 컨텍스트를 전달하는 것이 안정적
 
         val loginRepository = application.container.loginRepository
         val tokenRepository = application.container.tokenRepository
