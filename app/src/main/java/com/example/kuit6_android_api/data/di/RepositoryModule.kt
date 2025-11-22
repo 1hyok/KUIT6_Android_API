@@ -4,6 +4,8 @@ import com.example.kuit6_android_api.data.repository.LoginRepository
 import com.example.kuit6_android_api.data.repository.LoginRepositoryImpl
 import com.example.kuit6_android_api.data.repository.PostRepository
 import com.example.kuit6_android_api.data.repository.PostRepositoryImpl
+import com.example.kuit6_android_api.data.repository.TokenApiRepository
+import com.example.kuit6_android_api.data.repository.TokenApiRepositoryImpl
 import com.example.kuit6_android_api.data.repository.TokenRepository
 import com.example.kuit6_android_api.data.repository.TokenRepositoryImpl
 import dagger.Binds
@@ -30,6 +32,6 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindTokenApiRepository(impl: TokenRepositoryImpl) : TokenRepository
+    abstract fun bindTokenApiRepository(impl: TokenApiRepositoryImpl) : TokenApiRepository
 
 }
