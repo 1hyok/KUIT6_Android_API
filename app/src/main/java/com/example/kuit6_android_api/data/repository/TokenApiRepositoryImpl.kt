@@ -8,7 +8,7 @@ import javax.inject.Singleton
 class TokenApiRepositoryImpl @Inject constructor(
     private val apiService: ApiService
 ) : TokenApiRepository {
-    override suspend fun validateToken(): Result<Boolean> =
+    override suspend fun validateToken(context: Context): Result<Boolean> =
     runCatching {
         val response = apiService.validateToken()
         if (response.success && response.data == true) {

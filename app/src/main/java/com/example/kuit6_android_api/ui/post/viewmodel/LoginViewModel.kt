@@ -90,7 +90,7 @@ class LoginViewModel @Inject constructor(
             }
             
             // 토큰 검증 API 호출
-            val result = tokenRepository.validateToken(context)
+            val result = tokenApiRepository.validateToken(context)
             
             // 로딩 완료
             _uiState.update {
