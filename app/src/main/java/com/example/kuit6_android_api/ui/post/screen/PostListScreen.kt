@@ -81,6 +81,7 @@ fun PostListScreen(
             }
 
             is PostListUiState.Success -> {
+                val posts = (uiState as PostListUiState.Success).posts
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -89,7 +90,7 @@ fun PostListScreen(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items((uiState as PostListUiState.Success).posts) { post ->
+                    items(posts) { post ->
                         PostItem(
                             post = post,
                             onClick = { onPostClick(post.id) }
