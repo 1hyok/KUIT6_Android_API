@@ -15,10 +15,13 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import com.example.kuit6_android_api.ui.post.state.PostCreateUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 //PostViewModel을 PostListViewModel, PostCreateViewModel, PostDetailViewModel, PostEditViewModel로 분리
 
-class PostCreateViewModel(
+@HiltViewModel
+class PostCreateViewModel @Inject constructor(
     private val repository: PostRepository
     // 의존성 주입:뷰모델의 파라미터로 Repository를 전달하는 것
 ) : ViewModel() {
