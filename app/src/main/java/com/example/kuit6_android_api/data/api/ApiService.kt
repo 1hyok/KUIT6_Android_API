@@ -25,42 +25,42 @@ interface ApiService {
     @POST("/api/posts")
     suspend fun createPost(
         @Query("author") author: String = "규빈",
-        @Body request: PostCreateRequest
+        @Body request: PostCreateRequest,
     ): BaseResponse<PostResponse>
 
     // 게시글 상세 조회
     @GET("/api/posts/{id}")
     suspend fun getPostDetail(
-        @Path("id") id: Long
+        @Path("id") id: Long,
     ): BaseResponse<PostResponse>
 
     // 게시글 수정
     @PUT("/api/posts/{id}")
     suspend fun updatePost(
         @Path("id") id: Long,
-        @Body request: PostCreateRequest
+        @Body request: PostCreateRequest,
     ): BaseResponse<PostResponse>
 
     // 게시글 삭제
     @DELETE("/api/posts/{id}")
     suspend fun deletePost(
-        @Path("id") id: Long
+        @Path("id") id: Long,
     ): BaseResponse<Unit>
 
     // 이미지 업로드
     @Multipart
     @POST("/api/images/upload")
     suspend fun uploadImage(
-        @Part file: MultipartBody.Part
+        @Part file: MultipartBody.Part,
     ): BaseResponse<Map<String, String>>
 
     @POST("/api/auth/signup")
     suspend fun signup(
-        @Body request: LoginRequest
+        @Body request: LoginRequest,
     ): BaseResponse<LoginResponse>
 
     @POST("/api/auth/login")
     suspend fun login(
-        @Body request: LoginRequest
+        @Body request: LoginRequest,
     ): BaseResponse<LoginResponse>
 }

@@ -8,10 +8,10 @@ import com.example.kuit6_android_api.data.model.response.PostResponse
 import okhttp3.MultipartBody
 
 class PostRepositoryImpl(
-    private val apiService: ApiService
+    private val apiService: ApiService,
 ) : PostRepository {
-    override suspend fun getPosts(): Result<List<PostResponse>> {
-        return runCatching {
+    override suspend fun getPosts(): Result<List<PostResponse>> =
+        runCatching {
             val response: BaseResponse<List<PostResponse>> = apiService.getPosts()
             if (response.success && response.data != null) {
                 response.data
@@ -21,10 +21,9 @@ class PostRepositoryImpl(
         }.onFailure { error ->
             Log.e("PostRepository", error.message.toString())
         }
-    }
 
-    override suspend fun getPostDetail(postId: Long): Result<PostResponse> {
-        return runCatching {
+    override suspend fun getPostDetail(postId: Long): Result<PostResponse> =
+        runCatching {
             val response: BaseResponse<PostResponse> = apiService.getPostDetail(postId)
             if (response.success && response.data != null) {
                 response.data
@@ -32,15 +31,14 @@ class PostRepositoryImpl(
                 throw Exception(response.message ?: "게시글 상세 조회 실패")
             }
         }
-    }
 
     override suspend fun createPost(
         author: String,
         title: String,
         content: String,
-        imageUrl: String?
-    ): Result<PostResponse> {
-        return runCatching {
+        imageUrl: String?,
+    ): Result<PostResponse> =
+        runCatching {
             val request = PostCreateRequest(title, content, imageUrl)
             val response: BaseResponse<PostResponse> = apiService.createPost(author, request)
             if (response.success && response.data != null) {
@@ -49,15 +47,14 @@ class PostRepositoryImpl(
                 throw Exception(response.message ?: "게시글 생성 실패")
             }
         }
-    }
 
     override suspend fun updatePost(
         postId: Long,
         title: String,
         content: String,
-        imageUrl: String?
-    ): Result<PostResponse> {
-        return runCatching {
+        imageUrl: String?,
+    ): Result<PostResponse> =
+        runCatching {
             val request = PostCreateRequest(title, content, imageUrl)
             val response: BaseResponse<PostResponse> = apiService.updatePost(postId, request)
             if (response.success && response.data != null) {
@@ -66,10 +63,9 @@ class PostRepositoryImpl(
                 throw Exception(response.message ?: "게시글 수정 실패")
             }
         }
-    }
 
-    override suspend fun deletePost(postId: Long): Result<Unit> {
-        return runCatching {
+    override suspend fun deletePost(postId: Long): Result<Unit> =
+        runCatching {
             val response: BaseResponse<Unit> = apiService.deletePost(postId)
             if (response.success) {
                 Unit
@@ -77,10 +73,9 @@ class PostRepositoryImpl(
                 throw Exception(response.message ?: "게시글 삭제 실패")
             }
         }
-    }
 
-    override suspend fun uploadImage(file: MultipartBody.Part): Result<String> {
-        return runCatching {
+    override suspend fun uploadImage(file: MultipartBody.Part): Result<String> =
+        runCatching {
             val response: BaseResponse<Map<String, String>> = apiService.uploadImage(file)
             if (response.success && response.data != null) {
                 val imageUrl = response.data["imageUrl"]
@@ -93,5 +88,4 @@ class PostRepositoryImpl(
                 throw Exception(response.message ?: "이미지 업로드 실패")
             }
         }
-    }
 }
